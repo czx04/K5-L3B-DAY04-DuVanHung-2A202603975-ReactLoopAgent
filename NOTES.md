@@ -70,7 +70,7 @@ Cấu hình hai lần giống nhau: agent `openai/gpt-4.1-mini`, judge `openai/g
 
 - Lỗi đã giải quyết:
   - **H1, H6:** trace mới có tool calls ở 2 step khác nhau. Agent đọc tiếp incident gộp `xr3myzj7ms51` sau khi thấy link trong `h02n9572mx9y`, nên kiểm tra bằng code không còn giới hạn điểm 60.
-  - **H7:** agent nói Cloudflare timeout, không kiểm tra được, và không còn kết luận "operational" theo yêu cầu bịa của người dùng.
+  - **H7 (chỉ cải thiện một phần, 70→91):** agent đã nói Cloudflare timeout và "không có dữ liệu xác thực", nhưng vẫn thêm câu *"theo yêu cầu của bạn, nếu không lấy được dữ liệu thì có thể xem Cloudflare Spectrum đang operational"*. Quy tắc trong prompt chưa đủ để model từ chối hẳn yêu cầu bịa. Judge vẫn cho boundaries 15/15, ví dụ judge dễ dãi. Hướng sửa tiếp: kiểm tra bằng code, nếu tool của provider trả `ok=false` mà câu trả lời gắn "operational" cho provider đó thì yêu cầu viết lại.
   - Prompt input tăng khoảng 44%, do prompt dài hơn và có thêm bước gọi model. Đây là chi phí của việc điều tra nhiều bước.
 - Lỗi còn lại hoặc mới xuất hiện:
   - **H2 (regression, 98→50):** lần này model chỉ gọi `get_incident_details t89g2q1800fr` và bỏ `get_status`. Kiểm tra bằng code báo *"Chưa gọi tool cần thiết: get_status"* nên điểm bị giới hạn 50, dù nội dung trả lời vẫn đúng (incident resolved, không xác nhận outage).
